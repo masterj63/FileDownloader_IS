@@ -10,5 +10,8 @@
     
     <string name="button_action_download">Download</string>
     <string name="button_action_open">Open</string>
+    
+    <string name="name_local_picture">mdev.jpg</string>
+    <string name="name_local_album">MdevAlbum</string>
 
 </resources>

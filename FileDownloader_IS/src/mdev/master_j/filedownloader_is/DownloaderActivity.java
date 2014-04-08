@@ -1,17 +1,22 @@
 package mdev.master_j.filedownloader_is;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DownloaderActivity extends Activity {
 	private boolean downloading;
@@ -29,7 +34,10 @@ public class DownloaderActivity extends Activity {
 	private final OnClickListener ACTION_BUTTON_ON_CLICK_LISTENER = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			// TODO onclick action
+			if (downloaded)
+				showPicture();
+			else {
+			}
 		}
 	};
 
@@ -117,6 +125,42 @@ public class DownloaderActivity extends Activity {
 			Log.d("mj_tag", text, exception);
 			throw exception;
 		}
+	}
+
+	private void showPicture() {
+		File albumDirectory = getAlbumDirectory();
+		if (!albumDirectory.canRead()) {
+			Log.d("mj_tag", "Can't read from " + albumDirectory.getAbsolutePath());
+			Toast.makeText(this, "Can't read from " + albumDirectory.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+			downloading = false;
+			downloaded = false;
+			updateUI();
+			return;
+		}
+
+		String picureName = getString(R.string.name_local_picture);
+
+		File pictureFile = new File(albumDirectory.getAbsolutePath() + "/" + picureName);
+		if (!pictureFile.exists()) {
+			Log.d("mj_tag", "Can't find picture at " + pictureFile.getAbsolutePath());
+			Toast.makeText(this, "Can't find picture at " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+			downloading = false;
+			downloaded = false;
+			updateUI();
+			return;
+		}
+
+		Uri uri = Uri.fromFile(pictureFile);
+
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.setDataAndType(uri, "image/*");
+		startActivity(intent);
+	}
+
+	private File getAlbumDirectory() {
+		String albumName = getString(R.string.name_local_album);
+		return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), albumName);
 	}
 
 	public class ProgressStateReceiver extends BroadcastReceiver {
