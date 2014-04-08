@@ -20,4 +20,13 @@ public class DownloaderIntentService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO do i need to implement this?
 	}
+
+	private void sendState(boolean downloading, boolean downloaded, int max, int pos) {
+		Intent intent = new Intent(ACTION_STATE);
+		intent.putExtra(KEY_DOWNLOADING, downloading);
+		intent.putExtra(KEY_DOWNLOADED, downloaded);
+		intent.putExtra(KEY_PROGRESS_MAX, max);
+		intent.putExtra(KEY_PROGRESS_POS, pos);
+		sendBroadcast(intent);
+	}
 }
