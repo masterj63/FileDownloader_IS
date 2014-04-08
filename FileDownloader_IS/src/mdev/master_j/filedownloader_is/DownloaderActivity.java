@@ -40,6 +40,7 @@ public class DownloaderActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
 		if (!progressStateReceiverIsRegistered) {
 			progressStateReceiverIsRegistered = true;
 			IntentFilter intentFilter = new IntentFilter();
@@ -47,6 +48,8 @@ public class DownloaderActivity extends Activity {
 			intentFilter.addAction("state");
 			registerReceiver(progressStateReceiver, intentFilter);
 		}
+
+		updateUI();
 	}
 
 	@Override
