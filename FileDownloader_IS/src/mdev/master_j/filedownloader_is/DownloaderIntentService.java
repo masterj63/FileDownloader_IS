@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 
 public class DownloaderIntentService extends IntentService {
-	static final String ACTION_PROGRESS = "mdev.master_j.filedownloader_is.PROGRESS";
 	static final String ACTION_STATE = "mdev.master_j.filedownloader_is.STATE";
 
 	static final String KEY_DOWNLOADING = "mdev.master_j.filedownloader_is.DOWNLOADING";

@@ -118,11 +118,6 @@ public class DownloaderActivity extends Activity {
 			if (intent.getAction().equals(DownloaderIntentService.ACTION_STATE)) {
 				downloading = intent.getBooleanExtra(DownloaderIntentService.KEY_DOWNLOADING, false);
 				downloaded = intent.getBooleanExtra(DownloaderIntentService.KEY_DOWNLOADED, false);
-				updateUI();
-				return;
-			}
-
-			if (intent.getAction().equals(DownloaderIntentService.ACTION_PROGRESS)) {
 				progressMax = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_MAX, 0);
 				progressPos = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_POS, 0);
 				updateUI();
