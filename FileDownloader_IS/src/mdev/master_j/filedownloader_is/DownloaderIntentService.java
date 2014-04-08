@@ -33,6 +33,7 @@ public class DownloaderIntentService extends IntentService {
 
 	private static final int BUFFER_SIZE_BYTES = 1024 * 100;
 	private static final int NOTIFICATION_ID = 20;
+	private static final int NOTIFICATION_UPDATE_PERIOD = 80;
 
 	public DownloaderIntentService() {
 		super("Downloader Intent Service");
@@ -79,13 +80,16 @@ public class DownloaderIntentService extends IntentService {
 			total = conn.getContentLength();
 			byte buffer[] = new byte[BUFFER_SIZE_BYTES];
 			int bytesRead;
+			int counter = 0;
 			while ((bytesRead = inStream.read(buffer)) != -1) {
 				loaded += bytesRead;
 				outStream.write(buffer, 0, bytesRead);
 
 				sendState(true, false, total, loaded);
 
-				showNotification(loaded, total, true, DOWNLOADING_LABEL);
+				counter++;
+				if (counter % NOTIFICATION_UPDATE_PERIOD == 0)
+					showNotification(loaded, total, true, DOWNLOADING_LABEL);
 			}
 			outStream.flush();
 			outStream.close();

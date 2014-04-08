@@ -11,9 +11,9 @@
     <string name="button_action_download">Download</string>
     <string name="button_action_open">Open</string>
     
-    <string name="name_local_picture">mdev.jpg</string>
+    <string name="name_local_picture">mdev.png</string>
     <string name="name_local_album">MdevAlbum</string>
-    <string name="url_picture">http://www.hdwallpapers.in/walls/watch_dogs_ps4_game-wide.jpg</string>
+    <string name="url_picture">http://fc04.deviantart.net/fs71/f/2013/201/2/a/frost_as_a_dragon___frost_blast_by_fireflash_frostblast-d6eblhl.png</string>
     
     <string name="label_downloading">Downloading...</string>
     <string name="label_download_failure">Download failed</string>
