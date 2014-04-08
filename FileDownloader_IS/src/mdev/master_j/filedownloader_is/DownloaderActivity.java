@@ -30,6 +30,13 @@ public class DownloaderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_downloader);
 
+		if (savedInstanceState != null) {
+			downloading = savedInstanceState.getBoolean(DownloaderIntentService.KEY_DOWNLOADING);
+			downloaded = savedInstanceState.getBoolean(DownloaderIntentService.KEY_DOWNLOADED);
+			progressMax = savedInstanceState.getInt(DownloaderIntentService.KEY_PROGRESS_MAX);
+			progressPos = savedInstanceState.getInt(DownloaderIntentService.KEY_PROGRESS_POS);
+		}
+
 		progressStateReceiver = new ProgressStateReceiver();
 
 		statusTextView = (TextView) findViewById(R.id.status_textview);
@@ -61,6 +68,15 @@ public class DownloaderActivity extends Activity {
 			progressStateReceiverIsRegistered = false;
 			unregisterReceiver(progressStateReceiver);
 		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean(DownloaderIntentService.KEY_DOWNLOADING, downloading);
+		outState.getBoolean(DownloaderIntentService.KEY_DOWNLOADED, downloaded);
+		outState.getInt(DownloaderIntentService.KEY_PROGRESS_MAX, progressMax);
+		outState.getInt(DownloaderIntentService.KEY_PROGRESS_POS, progressPos);
 	}
 
 	private void updateUI() {
