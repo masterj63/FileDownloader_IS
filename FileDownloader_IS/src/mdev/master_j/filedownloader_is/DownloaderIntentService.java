@@ -18,6 +18,9 @@ import android.util.Log;
 
 public class DownloaderIntentService extends IntentService {
 	static final String ACTION_STATE = "mdev.master_j.filedownloader_is.STATE";
+	static final String ACTION_TOAST = "mdev.master_j.filedownloader_is.TOAST";
+
+	static final String KEY_TOAST = "mdev.master_j.filedownloader_is.TOAST_TEXT";
 
 	static final String KEY_DOWNLOADING = "mdev.master_j.filedownloader_is.DOWNLOADING";
 	static final String KEY_DOWNLOADED = "mdev.master_j.filedownloader_is.DOWNLOADED";
@@ -116,5 +119,8 @@ public class DownloaderIntentService extends IntentService {
 
 	private void toastText(String text) {
 		Log.d("mj_tag", text);
+		Intent intent = new Intent(ACTION_TOAST);
+		intent.putExtra(KEY_TOAST, text);
+		sendBroadcast(intent);
 	}
 }

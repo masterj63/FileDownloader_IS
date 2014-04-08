@@ -85,6 +85,7 @@ public class DownloaderActivity extends Activity {
 			progressStateReceiverIsRegistered = true;
 			IntentFilter intentFilter = new IntentFilter();
 			intentFilter.addAction(DownloaderIntentService.ACTION_STATE);
+			intentFilter.addAction(DownloaderIntentService.ACTION_TOAST);
 			registerReceiver(progressStateReceiver, intentFilter);
 		}
 
@@ -187,6 +188,11 @@ public class DownloaderActivity extends Activity {
 				progressMax = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_MAX, 0);
 				progressPos = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_POS, 0);
 				updateUI();
+				return;
+			}
+			if (intent.getAction().equals(DownloaderIntentService.ACTION_TOAST)) {
+				String text = intent.getStringExtra(DownloaderIntentService.KEY_TOAST);
+				Toast.makeText(DownloaderActivity.this, text, Toast.LENGTH_SHORT).show();
 				return;
 			}
 		}
