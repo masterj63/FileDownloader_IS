@@ -72,7 +72,7 @@ public class DownloaderIntentService extends IntentService {
 				loaded += bytesRead;
 				outStream.write(buffer, 0, bytesRead);
 
-				sendState(true, false, loaded, total);
+				sendState(true, false, total, loaded);
 			}
 			outStream.flush();
 			outStream.close();
