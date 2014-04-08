@@ -50,7 +50,6 @@ public class DownloaderActivity extends Activity {
 					return;
 				}
 				Intent intent = new Intent(DownloaderActivity.this, DownloaderIntentService.class);
-				// TODO extras
 				startService(intent);
 			}
 		}
