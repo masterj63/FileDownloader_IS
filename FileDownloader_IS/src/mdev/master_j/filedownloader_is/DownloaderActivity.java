@@ -62,8 +62,7 @@ public class DownloaderActivity extends Activity {
 		if (!progressStateReceiverIsRegistered) {
 			progressStateReceiverIsRegistered = true;
 			IntentFilter intentFilter = new IntentFilter();
-			intentFilter.addAction("progress");
-			intentFilter.addAction("state");
+			intentFilter.addAction(DownloaderIntentService.ACTION_STATE);
 			registerReceiver(progressStateReceiver, intentFilter);
 		}
 
