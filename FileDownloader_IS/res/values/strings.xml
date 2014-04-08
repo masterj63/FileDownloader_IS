@@ -3,5 +3,12 @@
 
     <string name="app_name">FileDownloader_IS</string>
     <string name="word_status">Status : </string>
+    
+    <string name="status_textview_idle">Idle</string>
+    <string name="status_textview_loading">Downloading</string>
+    <string name="status_textview_loaded">Downloaded</string>
+    
+    <string name="button_action_download">Download</string>
+    <string name="button_action_open">Open</string>
 
 </resources>
