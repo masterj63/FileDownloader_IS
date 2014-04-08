@@ -14,5 +14,9 @@
     <string name="name_local_picture">mdev.jpg</string>
     <string name="name_local_album">MdevAlbum</string>
     <string name="url_picture">http://www.hdwallpapers.in/walls/watch_dogs_ps4_game-wide.jpg</string>
+    
+    <string name="label_downloading">Downloading...</string>
+    <string name="label_download_failure">Download failed</string>
+    <string name="label_download_success">Download completed</string>
 
 </resources>

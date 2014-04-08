@@ -11,9 +11,12 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class DownloaderIntentService extends IntentService {
@@ -29,6 +32,7 @@ public class DownloaderIntentService extends IntentService {
 	static final String KEY_PROGRESS_MAX = "mdev.master_j.filedownloader_is.PROGRESS_MAX";
 
 	private static final int BUFFER_SIZE_BYTES = 1024 * 100;
+	private static final int NOTIFICATION_ID = 20;
 
 	public DownloaderIntentService() {
 		super("Downloader Intent Service");
@@ -36,6 +40,10 @@ public class DownloaderIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		final String DOWNLOADING_LABEL = getString(R.string.label_downloading);
+		final String FAILURE_LABEL = getString(R.string.label_download_failure);
+		final String SUCCESS_LABEL = getString(R.string.label_download_success);
+
 		int loaded = 0;
 		int total = 0;
 		String pictureUrl = getString(R.string.url_picture);
@@ -76,6 +84,8 @@ public class DownloaderIntentService extends IntentService {
 				outStream.write(buffer, 0, bytesRead);
 
 				sendState(true, false, total, loaded);
+
+				showNotification(loaded, total, true, DOWNLOADING_LABEL);
 			}
 			outStream.flush();
 			outStream.close();
@@ -91,9 +101,13 @@ public class DownloaderIntentService extends IntentService {
 		}
 
 		if (loaded != total) {
+			showNotification(loaded, total, false, FAILURE_LABEL);
+
 			toastText("downloading error");
 			sendState(false, false, 0, 0);
 		} else {
+			showNotification(loaded, total, false, SUCCESS_LABEL);
+
 			Intent mediaintent = new Intent();
 			mediaintent.setAction(Intent.ACTION_MEDIA_MOUNTED);
 			mediaintent.setData(Uri.fromFile(pictureFile));
@@ -101,6 +115,14 @@ public class DownloaderIntentService extends IntentService {
 
 			sendState(false, true, 0, 0);
 		}
+	}
+
+	private void showNotification(int loaded, int total, boolean ongoing, String title) {
+		int precents = (int) Math.ceil(100d * loaded / total);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %")
+				.setContentTitle(title).setSmallIcon(R.drawable.abc_menu_dropdown_panel_holo_light).setOngoing(ongoing);
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
 
 	private File getAlbumDirectory() {
