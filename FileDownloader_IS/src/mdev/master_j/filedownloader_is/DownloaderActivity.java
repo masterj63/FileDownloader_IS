@@ -75,6 +75,8 @@ public class DownloaderActivity extends Activity {
 			statusTextView.setText(R.string.status_textview_loading);
 			actionButton.setText(R.string.button_action_download);
 			actionButton.setEnabled(false);
+			downloadProgressBar.setMax(progressMax);
+			downloadProgressBar.setProgress(progressPos);
 			downloadProgressBar.setVisibility(View.VISIBLE);
 			return;
 		}
