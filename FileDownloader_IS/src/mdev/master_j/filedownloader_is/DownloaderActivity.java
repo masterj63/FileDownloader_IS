@@ -104,9 +104,9 @@ public class DownloaderActivity extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(DownloaderIntentService.KEY_DOWNLOADING, downloading);
-		outState.getBoolean(DownloaderIntentService.KEY_DOWNLOADED, downloaded);
-		outState.getInt(DownloaderIntentService.KEY_PROGRESS_MAX, progressMax);
-		outState.getInt(DownloaderIntentService.KEY_PROGRESS_POS, progressPos);
+		outState.putBoolean(DownloaderIntentService.KEY_DOWNLOADED, downloaded);
+		outState.putInt(DownloaderIntentService.KEY_PROGRESS_MAX, progressMax);
+		outState.putInt(DownloaderIntentService.KEY_PROGRESS_POS, progressPos);
 	}
 
 	private void updateUI() {
