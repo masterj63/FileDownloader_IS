@@ -120,7 +120,7 @@ public class DownloaderIntentService extends IntentService {
 	private void showNotification(int loaded, int total, boolean ongoing, String title) {
 		int precents = (int) Math.ceil(100d * loaded / total);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %")
-				.setContentTitle(title).setSmallIcon(R.drawable.abc_menu_dropdown_panel_holo_light).setOngoing(ongoing);
+				.setContentTitle(title).setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
