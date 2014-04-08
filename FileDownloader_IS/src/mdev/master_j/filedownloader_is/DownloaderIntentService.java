@@ -12,10 +12,8 @@ public class DownloaderIntentService extends IntentService {
 	static final String KEY_PROGRESS_POS = "mdev.master_j.filedownloader_is.PROGRESS_POS";
 	static final String KEY_PROGRESS_MAX = "mdev.master_j.filedownloader_is.PROGRESS_MAX";
 
-	public DownloaderIntentService(String name) {
-
-		super(name);
-		// TODO Auto-generated constructor stub
+	public DownloaderIntentService() {
+		super("Downloader Intent Service");
 	}
 
 	@Override
