@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +25,13 @@ public class DownloaderActivity extends Activity {
 
 	private ProgressStateReceiver progressStateReceiver;
 	private boolean progressStateReceiverIsRegistered;
+
+	private final OnClickListener ACTION_BUTTON_ON_CLICK_LISTENER = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			// TODO onclick action
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,7 @@ public class DownloaderActivity extends Activity {
 		statusTextView = (TextView) findViewById(R.id.status_textview);
 
 		actionButton = (Button) findViewById(R.id.button_action);
+		actionButton.setOnClickListener(ACTION_BUTTON_ON_CLICK_LISTENER);
 
 		downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
 	}
