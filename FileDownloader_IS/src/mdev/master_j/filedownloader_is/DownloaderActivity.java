@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,6 +39,19 @@ public class DownloaderActivity extends Activity {
 			if (downloaded)
 				showPicture();
 			else {
+				ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
+				if (netInfo == null || !netInfo.isConnected()) {
+					Log.d("mj_tag", "No internet connection");
+					Toast.makeText(DownloaderActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+					downloading = false;
+					downloaded = false;
+					updateUI();
+					return;
+				}
+				Intent intent = new Intent(DownloaderActivity.this, DownloaderIntentService.class);
+				// TODO extras
+				startService(intent);
 			}
 		}
 	};
