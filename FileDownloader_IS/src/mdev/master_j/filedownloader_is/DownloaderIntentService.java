@@ -112,10 +112,7 @@ public class DownloaderIntentService extends IntentService {
 		} else {
 			showNotification(loaded, total, false, SUCCESS_LABEL);
 
-			Intent mediaintent = new Intent();
-			mediaintent.setAction(Intent.ACTION_MEDIA_MOUNTED);
-			mediaintent.setData(Uri.fromFile(pictureFile));
-			sendBroadcast(mediaintent);
+			scanMedia(pictureFile);
 
 			sendState(false, true, 0, 0);
 		}
@@ -123,10 +120,16 @@ public class DownloaderIntentService extends IntentService {
 
 	private void showNotification(int loaded, int total, boolean ongoing, String title) {
 		int precents = (int) Math.ceil(100d * loaded / total);
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %")
-				.setContentTitle(title).setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %").setContentTitle(title)
+				.setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
+	}
+
+	private void scanMedia(File file) {
+		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		intent.setData(Uri.fromFile(file));
+		sendBroadcast(intent);
 	}
 
 	private File getAlbumDirectory() {
