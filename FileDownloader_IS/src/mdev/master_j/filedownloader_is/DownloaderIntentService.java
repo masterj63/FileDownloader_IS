@@ -116,6 +116,8 @@ public class DownloaderIntentService extends IntentService {
 
 			toastText("downloading error");
 			sendState(DownloadState.IDLE, 0, 0);
+
+			pictureFile.delete();
 		} else {
 			showNotification(loaded, total, false, SUCCESS_LABEL);
 
