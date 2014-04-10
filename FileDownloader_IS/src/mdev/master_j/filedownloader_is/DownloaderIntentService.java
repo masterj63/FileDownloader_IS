@@ -21,16 +21,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class DownloaderIntentService extends IntentService {
-	static final String ACTION_STATE = "mdev.master_j.filedownloader_is.STATE";
-	static final String ACTION_TOAST = "mdev.master_j.filedownloader_is.TOAST";
+	static final String ACTION_STATE = "mdev.master_j.filedownloader_is.DownloaderIntentService.ACTION_STATE";
+	static final String ACTION_TOAST = "mdev.master_j.filedownloader_is.DownloaderIntentService.ACTION_TOAST";
 
-	static final String KEY_TOAST = "mdev.master_j.filedownloader_is.TOAST_TEXT";
+	static final String EXTRA_TOAST = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_TOAST";
 
-	static final String KEY_DOWNLOADING = "mdev.master_j.filedownloader_is.DOWNLOADING";
-	static final String KEY_DOWNLOADED = "mdev.master_j.filedownloader_is.DOWNLOADED";
+	static final String EXTRA_DOWNLOADING = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADING";
+	static final String EXTRA_DOWNLOADED = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADED";
 
-	static final String KEY_PROGRESS_POS = "mdev.master_j.filedownloader_is.PROGRESS_POS";
-	static final String KEY_PROGRESS_MAX = "mdev.master_j.filedownloader_is.PROGRESS_MAX";
+	static final String EXTRA_PROGRESS_POS = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_POS";
+	static final String EXTRA_PROGRESS_MAX = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_MAX";
 
 	private static final int BUFFER_SIZE_BYTES = 1024 * 100;
 	private static final int NOTIFICATION_ID = 20;
@@ -141,17 +141,17 @@ public class DownloaderIntentService extends IntentService {
 
 	private void sendState(boolean downloading, boolean downloaded, int max, int pos) {
 		Intent intent = new Intent(ACTION_STATE);
-		intent.putExtra(KEY_DOWNLOADING, downloading);
-		intent.putExtra(KEY_DOWNLOADED, downloaded);
-		intent.putExtra(KEY_PROGRESS_MAX, max);
-		intent.putExtra(KEY_PROGRESS_POS, pos);
+		intent.putExtra(EXTRA_DOWNLOADING, downloading);
+		intent.putExtra(EXTRA_DOWNLOADED, downloaded);
+		intent.putExtra(EXTRA_PROGRESS_MAX, max);
+		intent.putExtra(EXTRA_PROGRESS_POS, pos);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 
 	private void toastText(String text) {
 		Log.d("mj_tag", text);
 		Intent intent = new Intent(ACTION_TOAST);
-		intent.putExtra(KEY_TOAST, text);
+		intent.putExtra(EXTRA_TOAST, text);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 }

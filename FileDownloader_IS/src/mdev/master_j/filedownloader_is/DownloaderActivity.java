@@ -62,10 +62,10 @@ public class DownloaderActivity extends Activity {
 		setContentView(R.layout.activity_downloader);
 
 		if (savedInstanceState != null) {
-			downloading = savedInstanceState.getBoolean(DownloaderIntentService.KEY_DOWNLOADING);
-			downloaded = savedInstanceState.getBoolean(DownloaderIntentService.KEY_DOWNLOADED);
-			progressMax = savedInstanceState.getInt(DownloaderIntentService.KEY_PROGRESS_MAX);
-			progressPos = savedInstanceState.getInt(DownloaderIntentService.KEY_PROGRESS_POS);
+			downloading = savedInstanceState.getBoolean(DownloaderIntentService.EXTRA_DOWNLOADING);
+			downloaded = savedInstanceState.getBoolean(DownloaderIntentService.EXTRA_DOWNLOADED);
+			progressMax = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_MAX);
+			progressPos = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_POS);
 		}
 
 		progressStateReceiver = new ProgressStateReceiver();
@@ -105,10 +105,10 @@ public class DownloaderActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putBoolean(DownloaderIntentService.KEY_DOWNLOADING, downloading);
-		outState.putBoolean(DownloaderIntentService.KEY_DOWNLOADED, downloaded);
-		outState.putInt(DownloaderIntentService.KEY_PROGRESS_MAX, progressMax);
-		outState.putInt(DownloaderIntentService.KEY_PROGRESS_POS, progressPos);
+		outState.putBoolean(DownloaderIntentService.EXTRA_DOWNLOADING, downloading);
+		outState.putBoolean(DownloaderIntentService.EXTRA_DOWNLOADED, downloaded);
+		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_MAX, progressMax);
+		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_POS, progressPos);
 	}
 
 	private void updateUI() {
@@ -184,15 +184,15 @@ public class DownloaderActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(DownloaderIntentService.ACTION_STATE)) {
-				downloading = intent.getBooleanExtra(DownloaderIntentService.KEY_DOWNLOADING, false);
-				downloaded = intent.getBooleanExtra(DownloaderIntentService.KEY_DOWNLOADED, false);
-				progressMax = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_MAX, 0);
-				progressPos = intent.getIntExtra(DownloaderIntentService.KEY_PROGRESS_POS, 0);
+				downloading = intent.getBooleanExtra(DownloaderIntentService.EXTRA_DOWNLOADING, false);
+				downloaded = intent.getBooleanExtra(DownloaderIntentService.EXTRA_DOWNLOADED, false);
+				progressMax = intent.getIntExtra(DownloaderIntentService.EXTRA_PROGRESS_MAX, 0);
+				progressPos = intent.getIntExtra(DownloaderIntentService.EXTRA_PROGRESS_POS, 0);
 				updateUI();
 				return;
 			}
 			if (intent.getAction().equals(DownloaderIntentService.ACTION_TOAST)) {
-				String text = intent.getStringExtra(DownloaderIntentService.KEY_TOAST);
+				String text = intent.getStringExtra(DownloaderIntentService.EXTRA_TOAST);
 				Toast.makeText(DownloaderActivity.this, text, Toast.LENGTH_SHORT).show();
 				return;
 			}
