@@ -61,6 +61,13 @@ public class DownloaderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_downloader);
 
+		if (savedInstanceState == null) {
+			SharedPreferences.Editor editor = getSharedPreferences(DownloaderIntentService.NAME_SHARED_PREFERENCES,
+					MODE_PRIVATE).edit();
+			editor.clear();
+			editor.commit();
+		}
+
 		progressStateReceiver = new ProgressStateReceiver();
 
 		statusTextView = (TextView) findViewById(R.id.status_textview);
@@ -130,8 +137,6 @@ public class DownloaderActivity extends Activity {
 			downloadProgressBar.setVisibility(View.INVISIBLE);
 			return;
 		}
-		if (downloadState == null)
-			Toast.makeText(this, "null!!", Toast.LENGTH_SHORT).show();
 	}
 
 	private void showPicture() {
