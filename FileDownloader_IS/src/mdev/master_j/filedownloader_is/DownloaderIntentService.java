@@ -81,16 +81,16 @@ public class DownloaderIntentService extends IntentService {
 			total = conn.getContentLength();
 			byte buffer[] = new byte[BUFFER_SIZE_BYTES];
 			int bytesRead;
-			int counter = 0;
+			int counter = NOTIFICATION_UPDATE_PERIOD;
 			while ((bytesRead = inStream.read(buffer)) != -1) {
 				loaded += bytesRead;
 				outStream.write(buffer, 0, bytesRead);
 
 				sendState(true, false, total, loaded);
 
-				counter++;
 				if (counter % NOTIFICATION_UPDATE_PERIOD == 0)
 					showNotification(loaded, total, true, DOWNLOADING_LABEL);
+				counter++;
 			}
 			outStream.flush();
 			outStream.close();
