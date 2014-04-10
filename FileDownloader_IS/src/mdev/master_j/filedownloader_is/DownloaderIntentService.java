@@ -12,6 +12,7 @@ import java.net.URL;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -77,8 +78,6 @@ public class DownloaderIntentService extends IntentService {
 				sendState(DownloadState.IDLE, 0, 0);
 				return;
 			}
-			// TODO do i really need the following line?
-			sendState(DownloadState.IN_PROGRESS, 0, 0);
 
 			String pictureName = getString(R.string.name_local_picture);
 			pictureFile = new File(albumDirectory.getAbsolutePath() + "/" + pictureName);
@@ -130,8 +129,24 @@ public class DownloaderIntentService extends IntentService {
 		int percents = (int) Math.ceil(100d * loaded / total);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(percents + " %")
 				.setContentTitle(title).setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
+
+		if (ongoing) {
+			Intent intent = new Intent(this, DownloaderActivity.class);
+
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+			builder.addAction(R.drawable.ic_launcher, "show app", pendingIntent);
+		} else {
+			builder.setAutoCancel(true);
+
+			Intent intent = getShowPictureIntent();
+			if (intent != null) {
+				PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+						PendingIntent.FLAG_CANCEL_CURRENT);
+				builder.setContentIntent(pendingIntent);
+			}
+		}
+
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// TODO set notification action depending on ongoing value
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
 
@@ -165,5 +180,29 @@ public class DownloaderIntentService extends IntentService {
 		Intent intent = new Intent(ACTION_TOAST);
 		intent.putExtra(EXTRA_TOAST, text);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+	}
+
+	private Intent getShowPictureIntent() {
+		File albumDirectory = getAlbumDirectory();
+		if (!albumDirectory.canRead()) {
+			Log.d("mj_tag", "Can't read from " + albumDirectory.getAbsolutePath());
+			return null;
+		}
+
+		String picureName = getString(R.string.name_local_picture);
+
+		File pictureFile = new File(albumDirectory.getAbsolutePath() + "/" + picureName);
+		if (!pictureFile.exists()) {
+			Log.d("mj_tag", "Can't find picture at " + pictureFile.getAbsolutePath());
+			return null;
+		}
+
+		Uri uri = Uri.fromFile(pictureFile);
+
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.setDataAndType(uri, "image/*");
+
+		return intent;
 	}
 }
