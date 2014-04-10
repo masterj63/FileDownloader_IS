@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,7 +87,7 @@ public class DownloaderActivity extends Activity {
 			IntentFilter intentFilter = new IntentFilter();
 			intentFilter.addAction(DownloaderIntentService.ACTION_STATE);
 			intentFilter.addAction(DownloaderIntentService.ACTION_TOAST);
-			registerReceiver(progressStateReceiver, intentFilter);
+			LocalBroadcastManager.getInstance(this).registerReceiver(progressStateReceiver, intentFilter);
 		}
 
 		updateUI();
@@ -97,7 +98,7 @@ public class DownloaderActivity extends Activity {
 		super.onPause();
 		if (progressStateReceiverIsRegistered) {
 			progressStateReceiverIsRegistered = false;
-			unregisterReceiver(progressStateReceiver);
+			LocalBroadcastManager.getInstance(this).unregisterReceiver(progressStateReceiver);
 		}
 	}
 

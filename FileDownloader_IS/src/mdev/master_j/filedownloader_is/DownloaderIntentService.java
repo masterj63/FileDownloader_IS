@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class DownloaderIntentService extends IntentService {
@@ -120,8 +121,8 @@ public class DownloaderIntentService extends IntentService {
 
 	private void showNotification(int loaded, int total, boolean ongoing, String title) {
 		int precents = (int) Math.ceil(100d * loaded / total);
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %").setContentTitle(title)
-				.setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(precents + " %")
+				.setContentTitle(title).setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
@@ -129,7 +130,7 @@ public class DownloaderIntentService extends IntentService {
 	private void scanMedia(File file) {
 		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		intent.setData(Uri.fromFile(file));
-		sendBroadcast(intent);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 
 	private File getAlbumDirectory() {
@@ -143,13 +144,13 @@ public class DownloaderIntentService extends IntentService {
 		intent.putExtra(KEY_DOWNLOADED, downloaded);
 		intent.putExtra(KEY_PROGRESS_MAX, max);
 		intent.putExtra(KEY_PROGRESS_POS, pos);
-		sendBroadcast(intent);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 
 	private void toastText(String text) {
 		Log.d("mj_tag", text);
 		Intent intent = new Intent(ACTION_TOAST);
 		intent.putExtra(KEY_TOAST, text);
-		sendBroadcast(intent);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 }
