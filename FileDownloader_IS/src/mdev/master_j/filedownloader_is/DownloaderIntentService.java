@@ -14,6 +14,7 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
@@ -30,6 +31,8 @@ public class DownloaderIntentService extends IntentService {
 
 	static final String EXTRA_PROGRESS_POS = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_POS";
 	static final String EXTRA_PROGRESS_MAX = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_MAX";
+
+	static final String NAME_SHARED_PREFERENCES = "mdev.master_j.filedownloader_is.DownloaderIntentService.NAME_SHARED_PREFERENCES";
 
 	enum DownloadState {
 		IDLE, IN_PROGRESS, DONE
@@ -149,6 +152,12 @@ public class DownloaderIntentService extends IntentService {
 		intent.putExtra(EXTRA_PROGRESS_MAX, max);
 		intent.putExtra(EXTRA_PROGRESS_POS, pos);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+		SharedPreferences.Editor editor = getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE).edit();
+		editor.putString(EXTRA_DOWNLOAD_STATE, downloadState.toString());
+		editor.putInt(EXTRA_PROGRESS_MAX, max);
+		editor.putInt(EXTRA_PROGRESS_POS, pos);
+		editor.commit();
 	}
 
 	private void toastText(String text) {
