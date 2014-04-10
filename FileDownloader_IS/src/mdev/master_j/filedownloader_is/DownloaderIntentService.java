@@ -28,11 +28,6 @@ public class DownloaderIntentService extends IntentService {
 
 	static final String EXTRA_DOWNLOAD_STATE = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOAD_STATE";
 
-	// static final String EXTRA_DOWNLOADING =
-	// "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADING";
-	// static final String EXTRA_DOWNLOADED =
-	// "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADED";
-
 	static final String EXTRA_PROGRESS_POS = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_POS";
 	static final String EXTRA_PROGRESS_MAX = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_MAX";
 
@@ -150,8 +145,6 @@ public class DownloaderIntentService extends IntentService {
 
 	private void sendState(DownloadState downloadState, int max, int pos) {
 		Intent intent = new Intent(ACTION_STATE);
-		// intent.putExtra(EXTRA_DOWNLOADING, downloading);
-		// intent.putExtra(EXTRA_DOWNLOADED, downloaded);
 		intent.putExtra(EXTRA_DOWNLOAD_STATE, downloadState);
 		intent.putExtra(EXTRA_PROGRESS_MAX, max);
 		intent.putExtra(EXTRA_PROGRESS_POS, pos);

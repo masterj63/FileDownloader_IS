@@ -75,6 +75,9 @@ public class DownloaderActivity extends Activity {
 		actionButton.setOnClickListener(ACTION_BUTTON_ON_CLICK_LISTENER);
 
 		downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
+
+		if (downloadState == null)
+			downloadState = DownloadState.IDLE;
 	}
 
 	@Override
@@ -133,6 +136,8 @@ public class DownloaderActivity extends Activity {
 			downloadProgressBar.setVisibility(View.INVISIBLE);
 			return;
 		}
+		if (downloadState == null)
+			Toast.makeText(this, "null!!", Toast.LENGTH_SHORT).show();
 	}
 
 	private void showPicture() {
