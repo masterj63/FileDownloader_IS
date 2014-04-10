@@ -124,6 +124,7 @@ public class DownloaderIntentService extends IntentService {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentText(percents + " %")
 				.setContentTitle(title).setSmallIcon(R.drawable.ic_launcher).setOngoing(ongoing);
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// TODO set notification action depending on ongoing value
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
 
