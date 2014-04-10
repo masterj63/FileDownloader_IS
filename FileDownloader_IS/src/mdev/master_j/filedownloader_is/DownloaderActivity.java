@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -60,13 +61,6 @@ public class DownloaderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_downloader);
 
-		if (savedInstanceState != null) {
-			downloadState = (DownloadState) savedInstanceState
-					.getSerializable(DownloaderIntentService.EXTRA_DOWNLOAD_STATE);
-			progressMax = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_MAX);
-			progressPos = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_POS);
-		}
-
 		progressStateReceiver = new ProgressStateReceiver();
 
 		statusTextView = (TextView) findViewById(R.id.status_textview);
@@ -92,6 +86,14 @@ public class DownloaderActivity extends Activity {
 			LocalBroadcastManager.getInstance(this).registerReceiver(progressStateReceiver, intentFilter);
 		}
 
+		SharedPreferences preferences = getSharedPreferences(DownloaderIntentService.NAME_SHARED_PREFERENCES,
+				Context.MODE_PRIVATE);
+		progressMax = preferences.getInt(DownloaderIntentService.EXTRA_PROGRESS_MAX, 0);
+		progressPos = preferences.getInt(DownloaderIntentService.EXTRA_PROGRESS_POS, 0);
+		String downloadStateString = preferences.getString(DownloaderIntentService.EXTRA_DOWNLOAD_STATE,
+				DownloadState.IDLE.toString());
+		downloadState = DownloadState.valueOf(downloadStateString);
+
 		updateUI();
 	}
 
@@ -102,14 +104,6 @@ public class DownloaderActivity extends Activity {
 			progressStateReceiverIsRegistered = false;
 			LocalBroadcastManager.getInstance(this).unregisterReceiver(progressStateReceiver);
 		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(DownloaderIntentService.EXTRA_DOWNLOAD_STATE, downloadState);
-		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_MAX, progressMax);
-		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_POS, progressPos);
 	}
 
 	private void updateUI() {
