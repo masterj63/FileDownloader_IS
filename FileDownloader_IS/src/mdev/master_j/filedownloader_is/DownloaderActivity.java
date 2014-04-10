@@ -2,6 +2,7 @@ package mdev.master_j.filedownloader_is;
 
 import java.io.File;
 
+import mdev.master_j.filedownloader_is.DownloaderIntentService.DownloadState;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,8 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DownloaderActivity extends Activity {
-	private boolean downloading;
-	private boolean downloaded;
+	private DownloadState downloadState;
 	private int progressPos;
 	private int progressMax;
 
@@ -37,7 +37,7 @@ public class DownloaderActivity extends Activity {
 	private final OnClickListener ACTION_BUTTON_ON_CLICK_LISTENER = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			if (downloaded)
+			if (downloadState == DownloadState.DONE)
 				showPicture();
 			else {
 				ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -45,8 +45,7 @@ public class DownloaderActivity extends Activity {
 				if (netInfo == null || !netInfo.isConnected()) {
 					Log.d("mj_tag", "No internet connection");
 					Toast.makeText(DownloaderActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
-					downloading = false;
-					downloaded = false;
+					downloadState = DownloadState.IDLE;
 					updateUI();
 					return;
 				}
@@ -62,8 +61,8 @@ public class DownloaderActivity extends Activity {
 		setContentView(R.layout.activity_downloader);
 
 		if (savedInstanceState != null) {
-			downloading = savedInstanceState.getBoolean(DownloaderIntentService.EXTRA_DOWNLOADING);
-			downloaded = savedInstanceState.getBoolean(DownloaderIntentService.EXTRA_DOWNLOADED);
+			downloadState = (DownloadState) savedInstanceState
+					.getSerializable(DownloaderIntentService.EXTRA_DOWNLOAD_STATE);
 			progressMax = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_MAX);
 			progressPos = savedInstanceState.getInt(DownloaderIntentService.EXTRA_PROGRESS_POS);
 		}
@@ -105,21 +104,20 @@ public class DownloaderActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putBoolean(DownloaderIntentService.EXTRA_DOWNLOADING, downloading);
-		outState.putBoolean(DownloaderIntentService.EXTRA_DOWNLOADED, downloaded);
+		outState.putSerializable(DownloaderIntentService.EXTRA_DOWNLOAD_STATE, downloadState);
 		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_MAX, progressMax);
 		outState.putInt(DownloaderIntentService.EXTRA_PROGRESS_POS, progressPos);
 	}
 
 	private void updateUI() {
-		if (!downloading && !downloaded) {
+		if (downloadState == DownloadState.IDLE) {
 			statusTextView.setText(R.string.status_textview_idle);
 			actionButton.setText(R.string.button_action_download);
 			actionButton.setEnabled(true);
 			downloadProgressBar.setVisibility(View.INVISIBLE);
 			return;
 		}
-		if (downloading && !downloaded) {
+		if (downloadState == DownloadState.IN_PROGRESS) {
 			statusTextView.setText(R.string.status_textview_loading);
 			actionButton.setText(R.string.button_action_download);
 			actionButton.setEnabled(false);
@@ -128,18 +126,12 @@ public class DownloaderActivity extends Activity {
 			downloadProgressBar.setVisibility(View.VISIBLE);
 			return;
 		}
-		if (!downloading && downloaded) {
+		if (downloadState == DownloadState.DONE) {
 			statusTextView.setText(R.string.status_textview_loaded);
 			actionButton.setText(R.string.button_action_open);
 			actionButton.setEnabled(true);
 			downloadProgressBar.setVisibility(View.INVISIBLE);
 			return;
-		}
-		if (downloading && downloaded) {
-			String text = "both downloading and downloaded are true";
-			IllegalStateException exception = new IllegalStateException(text);
-			Log.d("mj_tag", text, exception);
-			throw exception;
 		}
 	}
 
@@ -148,8 +140,7 @@ public class DownloaderActivity extends Activity {
 		if (!albumDirectory.canRead()) {
 			Log.d("mj_tag", "Can't read from " + albumDirectory.getAbsolutePath());
 			Toast.makeText(this, "Can't read from " + albumDirectory.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-			downloading = false;
-			downloaded = false;
+			downloadState = DownloadState.IDLE;
 			updateUI();
 			return;
 		}
@@ -160,8 +151,7 @@ public class DownloaderActivity extends Activity {
 		if (!pictureFile.exists()) {
 			Log.d("mj_tag", "Can't find picture at " + pictureFile.getAbsolutePath());
 			Toast.makeText(this, "Can't find picture at " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-			downloading = false;
-			downloaded = false;
+			downloadState = DownloadState.IDLE;
 			updateUI();
 			return;
 		}
@@ -184,8 +174,8 @@ public class DownloaderActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(DownloaderIntentService.ACTION_STATE)) {
-				downloading = intent.getBooleanExtra(DownloaderIntentService.EXTRA_DOWNLOADING, false);
-				downloaded = intent.getBooleanExtra(DownloaderIntentService.EXTRA_DOWNLOADED, false);
+				downloadState = (DownloadState) intent
+						.getSerializableExtra(DownloaderIntentService.EXTRA_DOWNLOAD_STATE);
 				progressMax = intent.getIntExtra(DownloaderIntentService.EXTRA_PROGRESS_MAX, 0);
 				progressPos = intent.getIntExtra(DownloaderIntentService.EXTRA_PROGRESS_POS, 0);
 				updateUI();

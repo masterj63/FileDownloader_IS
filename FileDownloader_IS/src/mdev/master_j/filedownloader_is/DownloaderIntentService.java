@@ -26,11 +26,19 @@ public class DownloaderIntentService extends IntentService {
 
 	static final String EXTRA_TOAST = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_TOAST";
 
-	static final String EXTRA_DOWNLOADING = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADING";
-	static final String EXTRA_DOWNLOADED = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADED";
+	static final String EXTRA_DOWNLOAD_STATE = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOAD_STATE";
+
+	// static final String EXTRA_DOWNLOADING =
+	// "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADING";
+	// static final String EXTRA_DOWNLOADED =
+	// "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_DOWNLOADED";
 
 	static final String EXTRA_PROGRESS_POS = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_POS";
 	static final String EXTRA_PROGRESS_MAX = "mdev.master_j.filedownloader_is.DownloaderIntentService.EXTRA_PROGRESS_MAX";
+
+	enum DownloadState {
+		IDLE, IN_PROGRESS, DONE
+	}
 
 	private static final int BUFFER_SIZE_BYTES = 1024 * 100;
 	private static final int NOTIFICATION_ID = 20;
@@ -68,10 +76,11 @@ public class DownloaderIntentService extends IntentService {
 			File albumDirectory = getAlbumDirectory();
 			if (!albumDirectory.mkdirs() && !albumDirectory.exists()) {
 				toastText("Cannot access " + albumDirectory.getAbsolutePath());
-				sendState(false, false, 0, 0);
+				sendState(DownloadState.IDLE, 0, 0);
 				return;
 			}
-			sendState(true, false, 0, 0);
+			// TODO do i really need the following line?
+			sendState(DownloadState.IN_PROGRESS, 0, 0);
 
 			String pictureName = getString(R.string.name_local_picture);
 			pictureFile = new File(albumDirectory.getAbsolutePath() + "/" + pictureName);
@@ -86,7 +95,7 @@ public class DownloaderIntentService extends IntentService {
 				loaded += bytesRead;
 				outStream.write(buffer, 0, bytesRead);
 
-				sendState(true, false, total, loaded);
+				sendState(DownloadState.IN_PROGRESS, total, loaded);
 
 				if (counter % NOTIFICATION_UPDATE_PERIOD == 0)
 					showNotification(loaded, total, true, DOWNLOADING_LABEL);
@@ -109,13 +118,13 @@ public class DownloaderIntentService extends IntentService {
 			showNotification(loaded, total, false, FAILURE_LABEL);
 
 			toastText("downloading error");
-			sendState(false, false, 0, 0);
+			sendState(DownloadState.IDLE, 0, 0);
 		} else {
 			showNotification(loaded, total, false, SUCCESS_LABEL);
 
 			scanMedia(pictureFile);
 
-			sendState(false, true, 0, 0);
+			sendState(DownloadState.DONE, 0, 0);
 		}
 	}
 
@@ -139,10 +148,11 @@ public class DownloaderIntentService extends IntentService {
 		return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), albumName);
 	}
 
-	private void sendState(boolean downloading, boolean downloaded, int max, int pos) {
+	private void sendState(DownloadState downloadState, int max, int pos) {
 		Intent intent = new Intent(ACTION_STATE);
-		intent.putExtra(EXTRA_DOWNLOADING, downloading);
-		intent.putExtra(EXTRA_DOWNLOADED, downloaded);
+		// intent.putExtra(EXTRA_DOWNLOADING, downloading);
+		// intent.putExtra(EXTRA_DOWNLOADED, downloaded);
+		intent.putExtra(EXTRA_DOWNLOAD_STATE, downloadState);
 		intent.putExtra(EXTRA_PROGRESS_MAX, max);
 		intent.putExtra(EXTRA_PROGRESS_POS, pos);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
