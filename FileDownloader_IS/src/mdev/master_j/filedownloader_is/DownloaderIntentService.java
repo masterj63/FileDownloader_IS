@@ -155,7 +155,7 @@ public class DownloaderIntentService extends IntentService {
 	private void scanMedia(File file) {
 		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		intent.setData(Uri.fromFile(file));
-		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+		sendBroadcast(intent);
 	}
 
 	private File getAlbumDirectory() {
